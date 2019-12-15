@@ -106,6 +106,29 @@ function AppBody() {
       window.localStorage.removeItem('happiness')
     }
   }, [savedHappiness])
+  
+  const [savedBirthday, setSavedBirthday] = React.useState(
+    window.localStorage.getItem('birthday') || '',
+  )
+  React.useEffect(() => {
+    if (savedBirthday) {
+      window.localStorage.setItem('birthday', savedBirthday)
+    } else {
+      window.localStorage.removeItem('birthday')
+    }
+  }, [savedBirthday])
+
+  const [savedProvince, setSavedProvince] = React.useState(
+    window.localStorage.getItem('province') || '',
+  )
+  React.useEffect(() => {
+    if (savedProvince) {
+      window.localStorage.setItem('province', savedProvince)
+    } else {
+      window.localStorage.removeItem('province')
+    }
+  }, [savedProvince])
+
   return (
     <Switch>
       <Route
@@ -130,6 +153,17 @@ function AppBody() {
           />
         )}
       />
+
+      <LoggedInRoute
+        isLoggedIn={Boolean(savedUsername)}
+        exact
+        path='/voting/2'
+        render={() => (
+          <StepTwo
+            setSavedBirthday={setSavedBirthday}
+            setSavedProvince={setSavedProvince}
+      />
+        )}
       />
     </Switch>
   )
@@ -219,6 +253,70 @@ function StepOne({ setSavedCandidate, setSavedHappiness }) {
   )
 }
 
+function StepTwo({ setSavedBirthday, setSavedProvince }) {
+  const [birthday, setBirthday] = React.useState(window.localStorage.getItem('birthday') || Date.now);
+  const [province, setProvince] = React.useState(window.localStorage.getItem('province') || '');
+  const history = useHistory();
+
+  const handleBirthdayChange = date => {
+    setBirthday(date);
+  };
+  
+  const handleProvinceChange = event => {
+    setProvince(event.target.value);
+  };
+
+  const handleClick = () => {
+    setSavedBirthday(birthday);
+    setSavedProvince(province);
+    history.push('/voting/3');
+  }
+
+  return (
+    <Grid container direction="column">
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          disableToolbar
+          variant="inline"
+          format="MM/dd/yyyy"
+          margin="normal"
+          id="date-picker-inline"
+          label="When is your birthday?"
+          value={birthday}
+          onChange={handleBirthdayChange}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+        />
+      </MuiPickersUtilsProvider>
+
+       <FormControl component="fieldset">
+        <FormLabel component="legend">Which province do you reside in?</FormLabel>
+        <Select
+          value={province}
+          onChange={handleProvinceChange}
+        >
+          {
+            PROVINCES.map(
+              (curr) => <MenuItem key={curr.code} value={curr.code}>{curr.name}</MenuItem>
+            )
+          }
+        </Select>
+      </FormControl>
+
+      
+      <Box display="flex" justifyContent="space-between">
+        <Button variant='contained'>
+          Pervious
+        </Button>
+        
+        <Button disabled={!(Boolean(birthday) && Boolean(province))} variant='contained' onClick={handleClick}>
+          Next
+        </Button>
+      </Box>
+    </Grid>
+  )
+}
 const withLoggedInState = Component => {
   return function NewComponent({ isLoggedIn, ...props }) {
     return (
