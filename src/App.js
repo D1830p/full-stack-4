@@ -126,11 +126,11 @@ function LoginPage({ savedUsername, setSavedUsername }) {
         />
       </Box>
 
-      <div>
+      <Box>
         <Button variant='contained' onClick={() => setSavedUsername(username)}>
           Continue
         </Button>
-    </div>
+      </Box>
     </Grid>
   )
 }
