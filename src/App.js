@@ -69,8 +69,42 @@ function AppHeader() {
           Back to start
         </Link>
       </Grid>
-
     </div>
+  )
+}
+
+function AppBody() {
+  const [savedUsername, setSavedUsername] = React.useState(
+    window.localStorage.getItem('username') || '',
+  )
+  React.useEffect(() => {
+    if (savedUsername) {
+      window.localStorage.setItem('username', savedUsername)
+    } else {
+      window.localStorage.removeItem('username')
+    }
+  }, [savedUsername])
+
+  return (
+    <Switch>
+      <Route
+        exact
+        path='/'
+        render={() => (
+          <LoginPage
+            savedUsername={savedUsername}
+            setSavedUsername={setSavedUsername}
+          />
+        )}
+      />
+
+      <LoggedInRoute
+        isLoggedIn={Boolean(savedUsername)}
+        exact
+        path='/voting/1'
+        render={() => <StepOne />}
+      />
+    </Switch>
   )
 }
     </div>
