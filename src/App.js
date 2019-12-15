@@ -85,6 +85,27 @@ function AppBody() {
     }
   }, [savedUsername])
 
+  const [savedCandidate, setSavedCandidate] = React.useState(
+    window.localStorage.getItem('candidate') || '',
+  )
+  React.useEffect(() => {
+    if (savedCandidate) {
+      window.localStorage.setItem('candidate', savedCandidate)
+    } else {
+      window.localStorage.removeItem('candidate')
+    }
+  }, [savedCandidate])
+
+  const [savedHappiness, setSavedHappiness] = React.useState(
+    window.localStorage.getItem('happiness') || '',
+  )
+  React.useEffect(() => {
+    if (savedHappiness) {
+      window.localStorage.setItem('happiness', savedHappiness)
+    } else {
+      window.localStorage.removeItem('happiness')
+    }
+  }, [savedHappiness])
   return (
     <Switch>
       <Route
