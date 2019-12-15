@@ -2,6 +2,7 @@ import './App.css'
 import React from 'react'
 import firebase from 'firebase'
 import Typography from '@material-ui/core/Typography'
+import FormLabel from '@material-ui/core/FormLabel'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
@@ -48,7 +49,8 @@ export default function App() {
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <div className='App'>
           <div className='App-Content'>
-            <Solution />
+            <AppHeader />
+            <AppBody />
           </div>
         </div>
       </MuiPickersUtilsProvider>
@@ -56,7 +58,7 @@ export default function App() {
   )
 }
 
-function Solution() {
+function AppHeader() {
   return (
     <div>
       <Grid container={true} justify='space-between'>
@@ -67,6 +69,10 @@ function Solution() {
           Back to start
         </Link>
       </Grid>
+
+    </div>
+  )
+}
     </div>
   )
 }
