@@ -19,7 +19,7 @@ export const PROVINCES = [
 export const CANDIDATE_NAME = {
   'johnny-bravo': 'Johnny Bravo',
   'satoshi-nakamoto': 'Satoshi Nakamoto',
-  thanos: 'Thanos',
+  'thanos': 'Thanos',
 }
 
 export const HAPPINESS_LABEL = {
