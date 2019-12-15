@@ -107,6 +107,30 @@ function AppBody() {
     </Switch>
   )
 }
+
+function LoginPage({ savedUsername, setSavedUsername }) {
+  const [username, setUsername] = React.useState('')
+
+  return (
+    <Grid container direction="column">
+      {savedUsername ? <Redirect to='/voting/1' /> : undefined}
+      <h2>
+          To begin your voting application, choose a username
+      </h2>
+
+      <Box py={2}>
+        <TextField
+          value={username}
+          label='Username'
+          onChange={event => setUsername(event.target.value)}
+        />
+      </Box>
+
+      <div>
+        <Button variant='contained' onClick={() => setSavedUsername(username)}>
+          Continue
+        </Button>
     </div>
+    </Grid>
   )
 }
