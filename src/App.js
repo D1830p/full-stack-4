@@ -134,3 +134,17 @@ function LoginPage({ savedUsername, setSavedUsername }) {
     </Grid>
   )
 }
+
+
+const withLoggedInState = Component => {
+  return function NewComponent({ isLoggedIn, ...props }) {
+    return (
+      <div>
+        {!isLoggedIn && <Redirect to='/login' />}
+        <Component {...props} />
+      </div>
+    )
+  }
+}
+
+const LoggedInRoute = withLoggedInState(Route)
