@@ -102,7 +102,13 @@ function AppBody() {
         isLoggedIn={Boolean(savedUsername)}
         exact
         path='/voting/1'
-        render={() => <StepOne />}
+        render={() => (
+          <StepOne
+            setSavedCandidate={setSavedCandidate}
+            setSavedHappiness={setSavedHappiness}
+          />
+        )}
+      />
       />
     </Switch>
   )
@@ -135,6 +141,62 @@ function LoginPage({ savedUsername, setSavedUsername }) {
   )
 }
 
+function StepOne({ setSavedCandidate, setSavedHappiness }) {
+  const [candidate, setCandidate] = React.useState(window.localStorage.getItem('candidate') || '');
+  const [happiness, setHappiness] = React.useState(window.localStorage.getItem('happiness') || '');
+
+  const history = useHistory();
+
+  const handleCandidateChange = event => {
+    setCandidate(event.target.value);
+  };
+  
+  const handleHappinessChange = event => {
+    setHappiness(event.target.value);
+  };
+
+  const handleClick = event => {
+    setSavedCandidate(candidate);
+    setSavedHappiness(happiness);
+    history.push('/voting/2');
+  }
+
+  return (
+    <Grid container direction="column">
+       <FormControl component="fieldset">
+        <FormLabel component="legend">Who is your favourite candidate?</FormLabel>
+        <RadioGroup aria-label="candidate" name="candidate" value={candidate} onChange={handleCandidateChange}>
+          {
+            Object.keys(CANDIDATE_NAME).map(
+              (curr) => <FormControlLabel key={curr} value={curr} control={<Radio />} label={CANDIDATE_NAME[curr]} />
+            )
+          }
+        </RadioGroup>
+      </FormControl>
+      
+      <FormControl component="fieldset">
+        <FormLabel component="legend">How happy are you with the current progress?</FormLabel>
+        <RadioGroup aria-label="happiness" name="happiness" value={happiness} onChange={handleHappinessChange}>
+          {
+            Object.keys(HAPPINESS_LABEL).map(
+              (curr) => <FormControlLabel key={curr} value={curr} control={<Radio />} label={HAPPINESS_LABEL[curr]} />
+            )
+          }
+        </RadioGroup>
+      </FormControl>
+      
+      <Box display="flex" justifyContent="space-between">
+        <Button variant='contained' onClick={() => console.log(candidate)}>
+          Pervious
+        </Button>
+
+        <Button disabled={!(Boolean(candidate) && Boolean(happiness))} variant='contained' onClick={handleClick}>
+          Next
+        </Button>
+      </Box>
+    </Grid>
+  )
+}
 
 const withLoggedInState = Component => {
   return function NewComponent({ isLoggedIn, ...props }) {
