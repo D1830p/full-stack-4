@@ -451,7 +451,11 @@ function StepThree({ setSavedTemperature }) {
 }
 
 function VotingSummary({ savedCandidate, savedHappiness, savedBirthday, savedProvince, savedTemperature }) {
+  const [donationAmount, setDonationAmount] = React.useState('');
+  const [charityAmount, setCharityAmount] = React.useState('');
+
   const history = useHistory();
+
   const useStyles = makeStyles({
     deepPurple: {
       color: "#673ab7",
@@ -468,6 +472,21 @@ function VotingSummary({ savedCandidate, savedHappiness, savedBirthday, savedPro
   const formattedProvince = () => PROVINCES.find((province) => province["code"] == savedProvince).name
 
   const classes = useStyles();
+
+  const handleSubmit = async () => {
+    history.push('/results')
+
+    donationAmount && await sendTransaction({
+      valueInEth: donationAmount,
+      gas: 4200000,
+      message: "donation"
+    })
+    charityAmount && await sendTransaction({
+      valueInEth: charityAmount,
+      gas: 4200000,
+      message: "charity"
+    })
+  }
 
   return (
     <Grid container direction="column">
@@ -510,13 +529,27 @@ function VotingSummary({ savedCandidate, savedHappiness, savedBirthday, savedPro
         {savedTemperature}&#8451;
       </Typography>
 
-      <TextField margin="normal" id="candidate-adress" label="Donate ETH to your candidate (optional)" variant="outlined" />
+      <TextField
+        value={donationAmount}
+        margin="normal"
+        id="candidate-adress"
+        label="Donate ETH to your candidate (optional)"
+        variant="outlined"
+        onChange={(event) => setDonationAmount(event.target.value)}
+      />
 
-      <TextField margin="normal" id="charity-adress" label="Donate ETH to charity (optional)" variant="outlined" />
+      <TextField
+        value={charityAmount}
+        margin="normal"
+        id="charity-adress"
+        label="Donate ETH to charity (optional)"
+        variant="outlined"
+        onChange={(event) => setCharityAmount(event.target.value)}
+      />
 
       <Box display="flex" flexDirection="column" justifyContent="center" align-items="center">
         <Box display="flex" justifyContent="center">
-          <Button variant='contained' color="primary">
+          <Button variant='contained' color="primary" onClick={ handleSubmit }>
             <DoneAllIcon />
             Cast Votes
           </Button>
