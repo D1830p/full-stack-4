@@ -129,6 +129,17 @@ function AppBody() {
     }
   }, [savedProvince])
 
+  const [savedTemperature, setSavedTemperature] = React.useState(
+    window.localStorage.getItem('temperature') || 20,
+  )
+  React.useEffect(() => {
+    if (savedTemperature) {
+      window.localStorage.setItem('temperature', savedTemperature)
+    } else {
+      window.localStorage.removeItem('temperature')
+    }
+  }, [savedTemperature])
+
   return (
     <Switch>
       <Route
@@ -165,6 +176,18 @@ function AppBody() {
       />
         )}
       />
+
+      <LoggedInRoute
+        isLoggedIn={Boolean(savedUsername)}
+        exact
+        path='/voting/3'
+        render={() => (
+          <StepThree
+            setSavedTemperature={setSavedTemperature}
+          />
+        )}
+      />
+
     </Switch>
   )
 }
@@ -239,13 +262,14 @@ function StepOne({ setSavedCandidate, setSavedHappiness }) {
           }
         </RadioGroup>
       </FormControl>
+      <Divider />
       
-      <Box display="flex" justifyContent="space-between">
-        <Button variant='contained' onClick={() => console.log(candidate)}>
+      <Box display="flex" justifyContent="space-between" mt={2}>
+        <Button variant='contained' disabled>
           Pervious
         </Button>
 
-        <Button disabled={!(Boolean(candidate) && Boolean(happiness))} variant='contained' onClick={handleClick}>
+        <Button disabled={!(Boolean(candidate) && Boolean(happiness))} color="primary" variant='contained' onClick={handleClick}>
           Next
         </Button>
       </Box>
@@ -303,14 +327,89 @@ function StepTwo({ setSavedBirthday, setSavedProvince }) {
           }
         </Select>
       </FormControl>
-
+      </Box>
       
-      <Box display="flex" justifyContent="space-between">
-        <Button variant='contained'>
+      <Divider />
+      
+      <Box display="flex" justifyContent="space-between" mt={2}>
+        <Button variant='contained' onClick={() => history.push('/voting/1')}>
           Pervious
         </Button>
         
-        <Button disabled={!(Boolean(birthday) && Boolean(province))} variant='contained' onClick={handleClick}>
+        <Button disabled={!(Boolean(birthday) && Boolean(province))} color="primary" variant='contained' onClick={handleClick}>
+          Next
+        </Button>
+      </Box>
+    </Grid>
+  )
+}
+
+function StepThree({ setSavedTemperature }) {
+  const [temperature, setTemperature] = React.useState(window.localStorage.getItem('temperature') || 20);
+  const history = useHistory();
+      
+  const handleTemperatureChange = (event, newValue) => {
+    setTemperature(newValue);
+  };
+
+  const marks = [
+    {
+      value: 0,
+      label: '0°C',
+    },
+    {
+      value: 20,
+      label: '20°C',
+    },
+    {
+      value: 37,
+      label: '37°C',
+    },
+    {
+      value: 100,
+      label: '100°C',
+    },
+  ];
+
+  function valuetext(value) {
+    return `${value}°C`;
+  }
+
+  const handleClick = () => {
+    setSavedTemperature(temperature);
+    history.push('/voting/summary');
+  }
+
+  return (
+    <Grid container direction="column">
+      <Box mb={2}>
+        <Typography variant="h3" gutterBottom>
+          Part 3
+        </Typography>
+
+        <Typography id="discrete-slider-restrict" gutterBottom>
+          What is your Ideal Room Temperature?
+        </Typography>
+
+        <Slider
+          defaultValue={Number(temperature)}
+          getAriaValueText={valuetext}
+          aria-labelledby="discrete-slider-restrict"
+          step={1}
+          valueLabelDisplay="auto"
+          marks={marks}
+          onChange={handleTemperatureChange}
+        />
+      </Box>
+      
+      <Divider />
+      
+      <Box display="flex" justifyContent="space-between" mt={2}>
+        <Button variant='contained' onClick={() => history.push('/voting/2')}>
+          Pervious
+        </Button>
+        
+        <Button variant='contained' color="primary" onClick={handleClick}>
           Next
         </Button>
       </Box>
