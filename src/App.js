@@ -188,6 +188,20 @@ function AppBody() {
         )}
       />
 
+      <LoggedInRoute
+        isLoggedIn={Boolean(savedUsername)}
+        exact
+        path='/voting/summary'
+        render={() => (
+          <VotingSummary
+            savedCandidate={savedCandidate}
+            savedHappiness={savedHappiness}
+            savedBirthday={savedBirthday}
+            savedProvince={savedProvince}
+            savedTemperature={savedTemperature}
+          />
+        )}
+      />
     </Switch>
   )
 }
@@ -416,6 +430,88 @@ function StepThree({ setSavedTemperature }) {
     </Grid>
   )
 }
+
+function VotingSummary({ savedCandidate, savedHappiness, savedBirthday, savedProvince, savedTemperature }) {
+  const history = useHistory();
+  const useStyles = makeStyles({
+    deepPurple: {
+      color: "#673ab7",
+      fontWeight: "bold"
+    }
+  });
+
+  const formattedDate = () => { 
+    const date = new Date(savedBirthday);
+    return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+
+  }
+
+  const formattedProvince = () => PROVINCES.find((province) => province["code"] == savedProvince).name
+
+  const classes = useStyles();
+
+  return (
+    <Grid container direction="column">
+      <Typography variant="h3" gutterBottom>
+        Summary
+      </Typography>
+
+      <Typography variant="subtitle1">
+        Who is your favourite candidate?
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        {CANDIDATE_NAME[savedCandidate]}
+      </Typography>
+
+      <Typography variant="subtitle1">
+        How happy are you with the current progress?
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        {HAPPINESS_LABEL[savedHappiness]}
+      </Typography>
+
+      <Typography variant="subtitle1">
+        When is your Birthday?
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        {formattedDate(savedBirthday)}
+      </Typography>
+
+      <Typography variant="subtitle1">
+        Which province do you reside in?
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        {formattedProvince()}
+      </Typography>
+
+      <Typography variant="subtitle1">
+        What is your ideal room temperature?
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        {savedTemperature}&#8451;
+      </Typography>
+
+      <TextField margin="normal" id="candidate-adress" label="Donate ETH to your candidate (optional)" variant="outlined" />
+
+      <TextField margin="normal" id="charity-adress" label="Donate ETH to charity (optional)" variant="outlined" />
+
+      <Box display="flex" flexDirection="column" justifyContent="center" align-items="center">
+        <Box display="flex" justifyContent="center">
+          <Button variant='contained' color="primary">
+            <DoneAllIcon />
+            Cast Votes
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="center" mt={2}>
+          <Button variant="outlined" onClick={() => history.push('/voting/3')}>
+            Go Back
+          </Button>
+        </Box>
+      </Box>
+    </Grid>
+  )
+}
+
 const withLoggedInState = Component => {
   return function NewComponent({ isLoggedIn, ...props }) {
     return (
