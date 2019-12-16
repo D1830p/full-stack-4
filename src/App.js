@@ -208,6 +208,15 @@ function AppBody() {
           />
         )}
       />
+
+      <LoggedInRoute
+        isLoggedIn={Boolean(savedUsername)}
+        exact
+        path='/results'
+        render={() => (
+          <Results />
+        )}
+      />
     </Switch>
   )
 }
@@ -564,15 +573,93 @@ function VotingSummary({ savedCandidate, savedHappiness, savedBirthday, savedPro
   )
 }
 
-const withLoggedInState = Component => {
-  return function NewComponent({ isLoggedIn, ...props }) {
-    return (
-      <div>
-        {!isLoggedIn && <Redirect to='/' />}
-        <Component {...props} />
-      </div>
-    )
-  }
+function Results() {
+  const useStyles = makeStyles({
+    deepPurple: {
+      color: "#673ab7",
+      fontWeight: "bold"
+    }
+  });
+  const classes = useStyles();
+
+  return (
+    <Grid container direction="column">
+      <Typography variant="h3" gutterBottom>
+        Results
+      </Typography>
+
+      <Typography variant="subtitle1">
+        Favourite candidate
+      </Typography>
+      {
+        Object.keys(CANDIDATE_NAME).map(
+          (key, index) => (
+          <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+            { CANDIDATE_NAME[key] } : { Math.abs(Math.floor(Math.random() * 10 - index)) }
+          </Typography>
+          )
+        )
+      }
+
+      <Typography variant="subtitle1">
+        Progress
+      </Typography>
+      {
+        Object.keys(HAPPINESS_LABEL).map(
+          (key, index) => (
+          <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+            { HAPPINESS_LABEL[key] } : { Math.abs(Math.floor(Math.random() * 10 - index)) }
+          </Typography>
+          )
+        )
+      }
+
+      <Typography variant="subtitle1">
+        Age Groups
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        19 or less : 5
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        20 to 29 : 0
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        30 to 39 : 1
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        40 to 49 : 0
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        50 or more : 0
+      </Typography>
+
+      <Typography variant="subtitle1">
+        Province
+      </Typography>
+      {
+        PROVINCES.map(
+          (value, index) => (
+          <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+            { value["name"] } : { Math.abs(Math.floor(Math.random() * 10 - index)) }
+          </Typography>
+          )
+        )
+      }
+
+      <Typography variant="subtitle1">
+        Ideal room temperature
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        23&#8451; : 2
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        27&#8451; : 4
+      </Typography>
+      <Typography variant="subtitle2" className={classes.deepPurple} gutterBottom>
+        45&#8451; : 1
+      </Typography>
+    </Grid>
+  )
 }
 
 const LoggedInRoute = withLoggedInState(Route);
