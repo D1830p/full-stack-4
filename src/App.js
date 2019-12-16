@@ -4,9 +4,8 @@ import withLoggedInState from './hocs/withLoggedInState'
 import sendTransaction from './sendTransaction'
 import firebase from 'firebase'
 import Typography from '@material-ui/core/Typography'
-import {makeStyles} from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import FormLabel from '@material-ui/core/FormLabel'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
@@ -26,7 +25,6 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
-import { ethers } from 'ethers'
 import {
   BrowserRouter,
   Switch,
@@ -38,13 +36,10 @@ import {
 } from 'react-router-dom'
 
 import {
-  DONATION_ADDRESS,
   PROVINCES,
   CANDIDATE_NAME,
   HAPPINESS_LABEL,
 } from './constants'
-
-const NETWORK = 'goerli'
 
 export default function App() {
   return (
