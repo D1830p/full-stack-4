@@ -1,5 +1,7 @@
 import './App.css'
 import React from 'react'
+import withLoggedInState from './hocs/withLoggedInState'
+import sendTransaction from './sendTransaction'
 import firebase from 'firebase'
 import Typography from '@material-ui/core/Typography'
 import {makeStyles} from '@material-ui/core/styles'
@@ -60,15 +62,18 @@ export default function App() {
 }
 
 function AppHeader() {
+  const location = useLocation();
+
   return (
     <div>
       <Grid container={true} justify='space-between'>
         <Typography component='h1' gutterBottom={true}>
           Cast Your Vote
         </Typography>
-        <Link to='/' component={RouterLink}>
-          Back to start
-        </Link>
+        {
+          (location.pathname == "/voting/2" || location.pathname == "/voting/3")
+            && (<Link to='/' component={RouterLink}> Back to start </Link>)
+        }
       </Grid>
     </div>
   )
