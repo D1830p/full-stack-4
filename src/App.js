@@ -2,6 +2,7 @@ import './App.css'
 import React from 'react'
 import firebase from 'firebase'
 import Typography from '@material-ui/core/Typography'
+import {makeStyles} from '@material-ui/core/styles'
 import FormLabel from '@material-ui/core/FormLabel'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
@@ -173,7 +174,7 @@ function AppBody() {
           <StepTwo
             setSavedBirthday={setSavedBirthday}
             setSavedProvince={setSavedProvince}
-      />
+          />
         )}
       />
 
@@ -208,14 +209,16 @@ function AppBody() {
 
 function LoginPage({ savedUsername, setSavedUsername }) {
   const [username, setUsername] = React.useState('')
-
+  const history = useHistory();
   return (
     <Grid container direction="column">
       {savedUsername ? <Redirect to='/voting/1' /> : undefined}
-      <h2>
-          To begin your voting application, choose a username
-      </h2>
-
+      <Typography variant="h4" gutterBottom>
+        To begin your voting application, choose a username
+      </Typography>
+      
+      <Divider />
+      
       <Box py={2}>
         <TextField
           value={username}
@@ -225,7 +228,7 @@ function LoginPage({ savedUsername, setSavedUsername }) {
       </Box>
 
       <Box>
-        <Button variant='contained' onClick={() => setSavedUsername(username)}>
+        <Button variant='contained' disabled={!username} onClick={() => {setSavedUsername(username); history.push('/voting/1')}}>
           Continue
         </Button>
       </Box>
@@ -255,34 +258,41 @@ function StepOne({ setSavedCandidate, setSavedHappiness }) {
 
   return (
     <Grid container direction="column">
-       <FormControl component="fieldset">
-        <FormLabel component="legend">Who is your favourite candidate?</FormLabel>
-        <RadioGroup aria-label="candidate" name="candidate" value={candidate} onChange={handleCandidateChange}>
-          {
-            Object.keys(CANDIDATE_NAME).map(
-              (curr) => <FormControlLabel key={curr} value={curr} control={<Radio />} label={CANDIDATE_NAME[curr]} />
-            )
-          }
-        </RadioGroup>
-      </FormControl>
-      
-      <FormControl component="fieldset">
-        <FormLabel component="legend">How happy are you with the current progress?</FormLabel>
-        <RadioGroup aria-label="happiness" name="happiness" value={happiness} onChange={handleHappinessChange}>
-          {
-            Object.keys(HAPPINESS_LABEL).map(
-              (curr) => <FormControlLabel key={curr} value={curr} control={<Radio />} label={HAPPINESS_LABEL[curr]} />
-            )
-          }
-        </RadioGroup>
-      </FormControl>
+      <Box mb={2}>
+        <Typography variant="h3" gutterBottom>
+          Part 1
+        </Typography>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Who is your favourite candidate?</FormLabel>
+          
+          <RadioGroup aria-label="candidate" name="candidate" value={candidate} onChange={handleCandidateChange}>
+            {
+              Object.keys(CANDIDATE_NAME).map(
+                (curr) => <FormControlLabel key={curr} value={curr} control={<Radio />} label={CANDIDATE_NAME[curr]} />
+              )
+            }
+          </RadioGroup>
+        </FormControl>
+        
+        <FormControl component="fieldset">
+          <FormLabel component="legend">How happy are you with the current progress?</FormLabel>
+          <RadioGroup aria-label="happiness" name="happiness" value={happiness} onChange={handleHappinessChange}>
+            {
+              Object.keys(HAPPINESS_LABEL).map(
+                (curr) => <FormControlLabel key={curr} value={curr} control={<Radio />} label={HAPPINESS_LABEL[curr]} />
+              )
+            }
+          </RadioGroup>
+        </FormControl>
+      </Box>
+            
       <Divider />
       
       <Box display="flex" justifyContent="space-between" mt={2}>
         <Button variant='contained' disabled>
           Pervious
         </Button>
-
+        
         <Button disabled={!(Boolean(candidate) && Boolean(happiness))} color="primary" variant='contained' onClick={handleClick}>
           Next
         </Button>
@@ -312,35 +322,39 @@ function StepTwo({ setSavedBirthday, setSavedProvince }) {
 
   return (
     <Grid container direction="column">
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          disableToolbar
-          variant="inline"
-          format="MM/dd/yyyy"
-          margin="normal"
-          id="date-picker-inline"
-          label="When is your birthday?"
-          value={birthday}
-          onChange={handleBirthdayChange}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-        />
-      </MuiPickersUtilsProvider>
+      <Box mb={2}>
+        <Typography variant="h3" gutterBottom>
+          Part 2
+        </Typography>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="MM/dd/yyyy"
+            margin="normal"
+            id="date-picker-inline"
+            label="When is your birthday?"
+            value={birthday}
+            onChange={handleBirthdayChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />
+        </MuiPickersUtilsProvider>
 
-       <FormControl component="fieldset">
-        <FormLabel component="legend">Which province do you reside in?</FormLabel>
-        <Select
-          value={province}
-          onChange={handleProvinceChange}
-        >
-          {
-            PROVINCES.map(
-              (curr) => <MenuItem key={curr.code} value={curr.code}>{curr.name}</MenuItem>
-            )
-          }
-        </Select>
-      </FormControl>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Which province do you reside in?</FormLabel>
+          <Select
+            value={province}
+            onChange={handleProvinceChange}
+          >
+            {
+              PROVINCES.map(
+                (curr) => <MenuItem key={curr.code} value={curr.code}>{curr.name}</MenuItem>
+              )
+            }
+          </Select>
+        </FormControl>
       </Box>
       
       <Divider />
@@ -361,7 +375,7 @@ function StepTwo({ setSavedBirthday, setSavedProvince }) {
 function StepThree({ setSavedTemperature }) {
   const [temperature, setTemperature] = React.useState(window.localStorage.getItem('temperature') || 20);
   const history = useHistory();
-      
+
   const handleTemperatureChange = (event, newValue) => {
     setTemperature(newValue);
   };
@@ -516,11 +530,11 @@ const withLoggedInState = Component => {
   return function NewComponent({ isLoggedIn, ...props }) {
     return (
       <div>
-        {!isLoggedIn && <Redirect to='/login' />}
+        {!isLoggedIn && <Redirect to='/' />}
         <Component {...props} />
       </div>
     )
   }
 }
 
-const LoggedInRoute = withLoggedInState(Route)
+const LoggedInRoute = withLoggedInState(Route);
